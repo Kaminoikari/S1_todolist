@@ -12,7 +12,9 @@ router.get('/register', (req, res) => {
   res.render('register');
 });
 
+
 router.post('/register', (req, res) => {
+  // 取得註冊表單參數
   const { name, email, password, confirmPassword } = req.body;
 
   // 以上為以下語法的結構複製
@@ -21,25 +23,29 @@ router.post('/register', (req, res) => {
   // const password = req.body.password;
   // const confirmPassword = req.body.confirmPassword;
 
-  User.findOne ({email}).then(user => {
+  // 檢查使用者是否已經註冊
+  User.findOne({ email }).then((user) => {
+    // 如果已經註冊：退回原本畫面
     if (user) {
-      console.log ('User already exists.')
+      console.log('User already exists.');
       res.render('register', {
-        name, 
+        name,
         email,
         password,
-        confirmPassword
+        confirmPassword,
+      });
+    } else {
+      // 如果還沒註冊：寫入資料庫
+      return User.create({
+        name,
+        email,
+        password,
       })
-      } else {
-        return User.create ({
-          name,
-          email,
-          password
-        })
-        .then (() => res.redirect('/'))
-        .catch (err => console.log (err))
-      }
+        .then(() => res.redirect('/'))
+        .catch((err) => console.log(err));
+    }
   })
-});
+  .catch(err => console.log(err))
+})
 
 module.exports = router;
