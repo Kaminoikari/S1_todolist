@@ -5,6 +5,7 @@ const home = require('./modules/home')
 const todos = require('./modules/todos')
 const users = require ('./modules/users')
 
+// 掛載 middleware
 const { authenticator } = require('../middleware/auth')
 
 router.use('/todos', authenticator, todos);
