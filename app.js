@@ -4,6 +4,7 @@ const usePassport = require('./config/passport');
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
+const flash = require ('connect-flash')
 
 const routes = require('./routes');
 require('./config/mongoose');
@@ -25,10 +26,13 @@ app.use(methodOverride('_method'));
 
 usePassport(app)
 
+app.use(flash())
 app.use((req, res, next) => {
   // 可以在這裡 console.log(req.user) 等資訊來觀察
   res.locals.isAuthenticated = req.isAuthenticated();
   res.locals.user = req.user;
+  res.locals.success_msg = req.flash('success_msg')
+  res.locals.warning_msg = req.flash('warning_msg');
   next();
 });
 
